@@ -8,6 +8,14 @@ class Admin {
 
         return $bookings;
     }
+
+    public function update_booking() {
+
+    }
+
+    public function delete_booking() {
+
+    }
 }
 
 ?>
