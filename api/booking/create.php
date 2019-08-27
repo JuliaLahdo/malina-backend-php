@@ -12,30 +12,38 @@ include_once '../config/Database.php';
 // Instantiate booking object
 include_once '../Booking.php';
 
-$database = new PDO();
-$db = $database->database_connection();
+$database = new Database();
+$db = $database->databaseConnection();
+
+$booking = new Booking($db);
 
 // Get posted data
 $data = json_decode(file_get_contents("php://input"));
- 
+
 // Make sure data is not empty
 if(
+    !empty($data->customerId) &&
     !empty($data->timeOfBooking) &&
-    !empty($data->numberOfGuests) &&
-    !empty($data->email) &&
-    !empty($data->name) &&
-    !empty($data->phone)
+    !empty($data->numberOfGuests) //&&
+    // !empty($data->email) &&
+    // !empty($data->name) &&
+    // !empty($data->phone)
 ){
  
     // Set booking property values
-    $booking->timeOfBooking = date('Y-m-d H:i:s');
+    $booking->customerId = $data->customerId;
+    $booking->timeOfBooking = $data->timeOfBooking;
     $booking->numberOfGuests = $data->numberOfGuests;
-    $booking->email = $data->email;
-    $booking->name = $data->name;
-    $booking->phone = $data->phone;
- 
+    // $booking->email = $data->email;
+    // $booking->name = $data->name;
+    // $booking->phone = $data->phone;
+
+    echo('TEST');
+
     // Create the booking
     if($booking->create()){
+
+        echo('TEST');
  
         // Set response code - 201 created
         http_response_code(201);
