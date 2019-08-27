@@ -1,15 +1,15 @@
 <?php
 
 class Admin {
-    public function fetchBookings() {
-        $statement_to_collect = $this->pdo->prepare("SELECT * FROM booking ORDER BY id DESC");
-        $statement_to_collect->execute();
-        $bookings = $statement_to_collect->fetchAll();
+    public function fetch_bookings() {
+        $statement = $this->pdo->prepare("SELECT * FROM booking ORDER BY id DESC");
+        $statement->execute();
+        $bookings = $statement->fetchAll();
 
         return $bookings;
     }
 
-    public function update_booking() {
+    public function update_booking($time_of_booking, $number_of_guests, $email, $name, $phone) {
 
     }
 
