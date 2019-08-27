@@ -12,7 +12,7 @@ include_once '../config/Database.php';
 // Instantiate booking object
 include_once '../Booking.php';
 
-$database = new Database();
+$database = new PDO();
 $db = $database->database_connection();
 
 // Get posted data
