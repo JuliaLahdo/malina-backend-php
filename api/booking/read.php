@@ -36,11 +36,18 @@ if($number>0) {
         // just $name only
         extract($row);
  
+        // $single_booking = array(
+        //     "id" => $id,
+        //     "customerId" => $customer_id,
+        //     "timeOfBooking" => $time_of_booking,
+        //     "numberOfGuests" => $number_of_guests
+        // );
+
         $single_booking = array(
             "id" => $id,
-            "customerId" => $customer_id,
-            "timeOfBooking" => $time_of_booking,
-            "numberOfGuests" => $number_of_guests
+            "customerId" => $customerId,
+            "timeOfBooking" => $timeOfBooking,
+            "numberOfGuests" => $numberOfGuests
         );
  
         array_push($bookings_array["bookings"], $single_booking);
