@@ -5,15 +5,18 @@ class Database {
     private $database_username = 'root';
     private $database_password = 'root';
 
+    public $pdo;
+
     public function database_connection() {
+        $this->pdo = null;
+
         try {
-            $pdo= new PDO($database_host, $database_username, $database_password);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $pdo;
+            $this->pdo = new PDO($database_host, $database_username, $database_password);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $error) {
             echo 'Connection failed: ' . $error->getMessage();
-            exit;
         }
+        return $this->pdo;
     }
 }
 
