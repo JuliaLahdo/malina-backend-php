@@ -1,21 +1,22 @@
 <?php
 
-class Admin {
-    public function fetch_bookings() {
-        $statement = $this->pdo->prepare("SELECT * FROM booking ORDER BY id DESC");
-        $statement->execute();
-        $bookings = $statement->fetchAll();
+// class Admin {
+//     public function fetchBookings() {
+//         $statement = $this->pdo->prepare("SELECT * FROM booking ORDER BY id DESC");
+//         $statement->execute();
+//         $bookings = $statement->fetchAll();
 
-        return $bookings;
-    }
+//         return $bookings;
+//     }
 
-    public function update_booking($time_of_booking, $number_of_guests, $email, $name, $phone) {
+//     public function updateBooking($timeOfBooking, $numberOfGuests, $email, $name, $phone) {
+//         $editBookings = $this->pdo->prepare("UPDATE booking SET timeOfBooking = :timeOfBooking, numberOfGuests = :numberOfGuests WHERE ")
 
-    }
+//     }
 
-    public function delete_booking() {
+//     public function deleteBooking() {
 
-    }
-}
+//     }
+// }
 
 ?>
