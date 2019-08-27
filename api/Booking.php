@@ -68,6 +68,31 @@ class Booking {
     
         return false;
     }
+
+
+    // delete the product
+function delete(){
+ 
+    // delete query
+    $booking = "DELETE FROM " . $this->tableName . " WHERE id = ?";
+ 
+    // prepare query
+    $statement = $this->pdo->prepare($booking);
+ 
+    // sanitize
+    $this->id=htmlspecialchars(strip_tags($this->id));
+ 
+    // bind id of record to delete
+    $statement->bindParam(1, $this->id);
+ 
+    // execute query
+    if($statement->execute()){
+        return true;
+    }
+ 
+    return false;
+     
+}
 }
 
 ?>
