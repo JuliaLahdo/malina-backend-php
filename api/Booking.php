@@ -35,34 +35,34 @@ class Booking {
     function create() {
         $bookingQuery = "INSERT INTO " . $this->tableName . "
             SET customerId=:customerId, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
-        // $customer_query = "INSERT INTO customer
-        //     SET email=:email, name=:name, phone=:phone";
+        $customerQuery = "INSERT INTO customer
+            SET email=:email, name=:name, phone=:phone";
 
         // Prepare booking query
         $bookingStatement = $this->pdo->prepare($bookingQuery);
 
         // Prepare customer query
-        // $customer_statement = $this->pdo->prepare($customer_query);
+        $customerStatement = $this->pdo->prepare($customerQuery);
 
         // Sanitize
         $this->customerId=htmlspecialchars(strip_tags($this->customerId));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-        // $this->email=htmlspecialchars(strip_tags($this->email));
-        // $this->name=htmlspecialchars(strip_tags($this->name));
-        // $this->phone=htmlspecialchars(strip_tags($this->phone));
+        $this->email=htmlspecialchars(strip_tags($this->email));
+        $this->name=htmlspecialchars(strip_tags($this->name));
+        $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // Bind values
         $bookingStatement->bindParam(":customerId", $this->customerId);
         $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
         $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
-        // $customer_statement->bindParam(":email", $this->email);
-        // $customer_statement->bindParam(":name", $this->name);
-        // $customer_statement->bindParam(":phone", $this->phone);
+        $customerStatement->bindParam(":email", $this->email);
+        $customerStatement->bindParam(":name", $this->name);
+        $customerStatement->bindParam(":phone", $this->phone);
     
         // Execute query
         // && $customer_statement->execute()
-        if($bookingStatement->execute()){
+        if($bookingStatement->execute() && $customerStatement->execute()){
             return true;
         }
     

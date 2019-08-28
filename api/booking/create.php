@@ -24,19 +24,19 @@ $data = json_decode(file_get_contents("php://input"));
 if(
     !empty($data->customerId) &&
     !empty($data->timeOfBooking) &&
-    !empty($data->numberOfGuests) //&&
-    // !empty($data->email) &&
-    // !empty($data->name) &&
-    // !empty($data->phone)
+    !empty($data->numberOfGuests) &&
+    !empty($data->email) &&
+    !empty($data->name) &&
+    !empty($data->phone)
 ){
  
     // Set booking property values
     $booking->customerId = $data->customerId;
     $booking->timeOfBooking = $data->timeOfBooking;
     $booking->numberOfGuests = $data->numberOfGuests;
-    // $booking->email = $data->email;
-    // $booking->name = $data->name;
-    // $booking->phone = $data->phone;
+    $booking->email = $data->email;
+    $booking->name = $data->name;
+    $booking->phone = $data->phone;
 
     echo('TEST');
 
