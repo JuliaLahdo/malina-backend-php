@@ -2,12 +2,13 @@
 
 class Booking {
     // Database connection & table name
-    private $pdo;
-    private $tableName = "booking";
+    private $bookingTable = "booking";
+    // private $customerTable = "customer";
 
     // Object properties
     public $id;
     public $customerId;
+    public $dateOfBooking;
     public $timeOfBooking;
     public $numberOfGuests;
     
@@ -18,12 +19,12 @@ class Booking {
 
     function read() {
         // Select all query
-        $query = "SELECT * FROM booking AS b 
+        $readBookings = "SELECT * FROM booking AS b 
             JOIN customer AS c on b.customerId = c.id
             ORDER BY b.id DESC";
         
         // Prepare query statement
-        $statement = $this->pdo->prepare($query);
+        $statement = $this->pdo->prepare($readBookings);
 
         // Execute query
         $statement->execute();
@@ -33,100 +34,99 @@ class Booking {
     }
 
     function create() {
-        $bookingQuery = "INSERT INTO " . $this->tableName . "
-            SET customerId=:customerId, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
-        $customerQuery = "INSERT INTO customer
-            SET email=:email, name=:name, phone=:phone";
+        $bookingQuery = "INSERT INTO " . $this->bookingTable . "
+            SET customerId=:customerId, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
+
+        // $customerQuery = "INSERT INTO " . $this->customerTable . "
+        //     SET email=:email, name=:name, phone=:phone";
 
         // Prepare booking query
         $bookingStatement = $this->pdo->prepare($bookingQuery);
-
         // Prepare customer query
-        $customerStatement = $this->pdo->prepare($customerQuery);
+        // $customerStatement = $this->pdo->prepare($customerQuery);
 
         // Sanitize
         $this->customerId=htmlspecialchars(strip_tags($this->customerId));
+        $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-        $this->email=htmlspecialchars(strip_tags($this->email));
-        $this->name=htmlspecialchars(strip_tags($this->name));
-        $this->phone=htmlspecialchars(strip_tags($this->phone));
+        // $this->email=htmlspecialchars(strip_tags($this->email));
+        // $this->name=htmlspecialchars(strip_tags($this->name));
+        // $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // Bind values
         $bookingStatement->bindParam(":customerId", $this->customerId);
+        $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
         $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
         $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
-        $customerStatement->bindParam(":email", $this->email);
-        $customerStatement->bindParam(":name", $this->name);
-        $customerStatement->bindParam(":phone", $this->phone);
+        // $customerStatement->bindParam(":email", $this->email);
+        // $customerStatement->bindParam(":name", $this->name);
+        // $customerStatement->bindParam(":phone", $this->phone);
     
         // Execute query
-        // && $customer_statement->execute()
-        if($bookingStatement->execute() && $customerStatement->execute()){
+        //  && $customerStatement->execute()
+        if($bookingStatement->execute()){
             return true;
         }
     
         return false;
     }
 
-
     // Delete the product
-function delete(){
+    function delete(){
  
-    // Delete query
-    $booking = "DELETE FROM " . $this->tableName . " WHERE id = ?";
- 
-    // Prepare query
-    $statement = $this->pdo->prepare($booking);
- 
-    // Sanitize
-    $this->id=htmlspecialchars(strip_tags($this->id));
- 
-    // Bind id of record to delete
-    $statement->bindParam(1, $this->id);
- 
-    // Execute query
-    if($statement->execute()){
-        return true;
-    }
- 
-    return false;
+        // Delete query
+        $deleteBooking = "DELETE FROM " . $this->bookingTable . " WHERE id = ?";
+    
+        // Prepare query
+        $statement = $this->pdo->prepare($deleteBooking);
+    
+        // Sanitize
+        $this->id=htmlspecialchars(strip_tags($this->id));
+    
+        // Bind id of record to delete
+        $statement->bindParam(1, $this->id);
+    
+        // Execute query
+        if($statement->execute()){
+            return true;
+        }
+    
+        return false;
      
 }
 
 
 // Update the product
-function update(){
- 
-    // Update booking
-    $query = "UPDATE
-                " . $this->tableName . "
-            SET
-            numberOfGuests=:numberOfGuests, 
-            timeOfBooking=:timeOfBooking
-            WHERE
-                id = :id";
- 
-    // Prepare query statement
-    $statement = $this->pdo->prepare($query);
- 
-    // Sanitize
-    $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-    $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
-    $this->id=htmlspecialchars(strip_tags($this->id));
- 
-    // Bind new values
-    $statement->bindParam(':numberOfGuests', $this->numberOfGuests);
-    $statement->bindParam(':timeOfBooking', $this->timeOfBooking);
-    $statement->bindParam(':id', $this->id);
- 
-    // Execute the query
-    if($statement->execute()){
-        return true;
+    function update(){
+    
+        // Update booking
+        $updateBooking = "UPDATE " . $this->tableName . " 
+                    SET numberOfGuests=:numberOfGuests, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking
+                    WHERE id = :id";
+    
+        // Prepare query statement
+        $statement = $this->pdo->prepare($updateBooking);
+    
+        // Sanitize
+        $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
+        $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
+        $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
+        $this->id=htmlspecialchars(strip_tags($this->id));
+    
+        // Bind new values
+        $statement->bindParam(':numberOfGuests', $this->numberOfGuests);
+        $statement->bindParam(':dateOfBooking', $this->dateOfBooking);
+        $statement->bindParam(':timeOfBooking', $this->timeOfBooking);
+        $statement->bindParam(':id', $this->id);
+    
+        // Execute the query
+        if($statement->execute()){
+            return true;
+        }
+    
+        return false;
     }
- 
-    return false;
-}
 
 }
 
