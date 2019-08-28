@@ -43,7 +43,7 @@ if($number>0) {
             "numberOfGuests" => $numberOfGuests
         );
  
-        array_push($bookings_array["bookings"], $singleBooking);
+        array_push($bookingsArray["bookings"], $singleBooking);
     }
  
     // Set response code - 200 OK
