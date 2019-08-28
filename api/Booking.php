@@ -68,6 +68,66 @@ class Booking {
     
         return false;
     }
+
+
+    // Delete the product
+function delete(){
+ 
+    // Delete query
+    $booking = "DELETE FROM " . $this->tableName . " WHERE id = ?";
+ 
+    // Prepare query
+    $statement = $this->pdo->prepare($booking);
+ 
+    // Sanitize
+    $this->id=htmlspecialchars(strip_tags($this->id));
+ 
+    // Bind id of record to delete
+    $statement->bindParam(1, $this->id);
+ 
+    // Execute query
+    if($statement->execute()){
+        return true;
+    }
+ 
+    return false;
+     
+}
+
+
+// Update the product
+function update(){
+ 
+    // Update booking
+    $query = "UPDATE
+                " . $this->tableName . "
+            SET
+            numberOfGuests=:numberOfGuests, 
+            timeOfBooking=:timeOfBooking
+            WHERE
+                id = :id";
+ 
+    // Prepare query statement
+    $statement = $this->pdo->prepare($query);
+ 
+    // Sanitize
+    $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
+    $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
+    $this->id=htmlspecialchars(strip_tags($this->id));
+ 
+    // Bind new values
+    $statement->bindParam(':numberOfGuests', $this->numberOfGuests);
+    $statement->bindParam(':timeOfBooking', $this->timeOfBooking);
+    $statement->bindParam(':id', $this->id);
+ 
+    // Execute the query
+    if($statement->execute()){
+        return true;
+    }
+ 
+    return false;
+}
+
 }
 
 ?>
