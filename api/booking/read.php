@@ -12,7 +12,7 @@ include_once '../Booking.php';
 
 // Instantiate database and product object
 $database = new Database();
-$db = $database->database_connection();
+$db = $database->databaseConnection();
 
 // Initialize object
 $booking = new Booking($db);
@@ -25,8 +25,8 @@ $number = $statement->rowCount();
 if($number>0) {
 
     //Bookingsarray
-    $bookings_array = array();
-    $bookings_array["bookings"] = array();
+    $bookingsArray = array();
+    $bookingsArray["bookings"] = array();
 
 
     // Retrieve our table contents
@@ -35,29 +35,22 @@ if($number>0) {
         // this will make $row['name'] to
         // just $name only
         extract($row);
- 
-        // $single_booking = array(
-        //     "id" => $id,
-        //     "customerId" => $customer_id,
-        //     "timeOfBooking" => $time_of_booking,
-        //     "numberOfGuests" => $number_of_guests
-        // );
 
-        $single_booking = array(
+        $singleBooking = array(
             "id" => $id,
             "customerId" => $customerId,
             "timeOfBooking" => $timeOfBooking,
             "numberOfGuests" => $numberOfGuests
         );
  
-        array_push($bookings_array["bookings"], $single_booking);
+        array_push($bookings_array["bookings"], $singleBooking);
     }
  
     // Set response code - 200 OK
     http_response_code(200);
  
     // Show products data in json format
-    echo json_encode($bookings_array);
+    echo json_encode($bookingsArray);
 } else {
     // Set response code - 404 Not found
     http_response_code(404);

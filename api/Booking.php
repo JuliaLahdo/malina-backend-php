@@ -3,13 +3,13 @@
 class Booking {
     // Database connection & table name
     private $pdo;
-    // private $table_name = "booking";
+    private $tableName = "booking";
 
     // Object properties
     public $id;
-    public $customer_id;
-    public $time_of_booking;
-    public $number_of_guests;
+    public $customerId;
+    public $timeOfBooking;
+    public $numberOfGuests;
     
     // Constructor with $database as database connection
     public function __construct($db) {
@@ -33,33 +33,36 @@ class Booking {
     }
 
     function create() {
-        $booking_query = "INSERT INTO booking
-            SET time_of_booking=:timeOfBooking, number_of_guests=:numberOfGuests";
-        $customer_query = "INSERT INTO customer
-            SET email=:email, name=:name, phone=:phone";
+        $bookingQuery = "INSERT INTO " . $this->tableName . "
+            SET customerId=:customerId, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
+        // $customer_query = "INSERT INTO customer
+        //     SET email=:email, name=:name, phone=:phone";
 
         // Prepare booking query
-        $booking_statement = $this->pdo->prepare($booking_query);
+        $bookingStatement = $this->pdo->prepare($bookingQuery);
 
         // Prepare customer query
-        $customer_statement = $this->pdo->prepare($customer_query);
+        // $customer_statement = $this->pdo->prepare($customer_query);
 
         // Sanitize
+        $this->customerId=htmlspecialchars(strip_tags($this->customerId));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-        $this->email=htmlspecialchars(strip_tags($this->email));
-        $this->name=htmlspecialchars(strip_tags($this->name));
-        $this->phone=htmlspecialchars(strip_tags($this->phone));
+        // $this->email=htmlspecialchars(strip_tags($this->email));
+        // $this->name=htmlspecialchars(strip_tags($this->name));
+        // $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // Bind values
-        $booking_statement->bindParam(":time_of_booking", $this->timeOfBooking);
-        $booking_statement->bindParam(":number_of_guests", $this->numberOfGuests);
-        $customer_statement->bindParam(":email", $this->email);
-        $customer_statement->bindParam(":name", $this->name);
-        $customer_statement->bindParam(":phone", $this->phone);
+        $bookingStatement->bindParam(":customerId", $this->customerId);
+        $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
+        $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
+        // $customer_statement->bindParam(":email", $this->email);
+        // $customer_statement->bindParam(":name", $this->name);
+        // $customer_statement->bindParam(":phone", $this->phone);
     
         // Execute query
-        if($booking_statement->execute() && $customer_statement->execute()){
+        // && $customer_statement->execute()
+        if($bookingStatement->execute()){
             return true;
         }
     
