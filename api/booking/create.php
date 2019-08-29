@@ -25,10 +25,10 @@ if(
     !empty($data->customerId) &&
     !empty($data->dateOfBooking) &&
     !empty($data->timeOfBooking) &&
-    !empty($data->numberOfGuests) //&&
-    // !empty($data->email) &&
-    // !empty($data->name) &&
-    // !empty($data->phone)
+    !empty($data->numberOfGuests) &&
+    !empty($data->email) &&
+    !empty($data->name) &&
+    !empty($data->phone)
 ){
  
     // Set booking property values
@@ -36,9 +36,9 @@ if(
     $booking->dateOfBooking = $data->dateOfBooking;
     $booking->timeOfBooking = $data->timeOfBooking;
     $booking->numberOfGuests = $data->numberOfGuests;
-    // $booking->email = $data->email;
-    // $booking->name = $data->name;
-    // $booking->phone = $data->phone;
+    $booking->email = $data->email;
+    $booking->name = $data->name;
+    $booking->phone = $data->phone;
     
     // Create the booking
     if($booking->create()){

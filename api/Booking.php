@@ -42,29 +42,29 @@ class Booking {
         // Prepare booking query
         $bookingStatement = $this->pdo->prepare($bookingQuery);
         // Prepare customer query
-        // $customerStatement = $this->pdo->prepare($customerQuery);
+        $customerStatement = $this->pdo->prepare($customerQuery);
 
         // Sanitize
         $this->customerId=htmlspecialchars(strip_tags($this->customerId));
         $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-        // $this->email=htmlspecialchars(strip_tags($this->email));
-        // $this->name=htmlspecialchars(strip_tags($this->name));
-        // $this->phone=htmlspecialchars(strip_tags($this->phone));
+        $this->email=htmlspecialchars(strip_tags($this->email));
+        $this->name=htmlspecialchars(strip_tags($this->name));
+        $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // Bind values
         $bookingStatement->bindParam(":customerId", $this->customerId);
         $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
         $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
         $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
-        // $customerStatement->bindParam(":email", $this->email);
-        // $customerStatement->bindParam(":name", $this->name);
-        // $customerStatement->bindParam(":phone", $this->phone);
+        $customerStatement->bindParam(":email", $this->email);
+        $customerStatement->bindParam(":name", $this->name);
+        $customerStatement->bindParam(":phone", $this->phone);
     
         // Execute query
-        //  && $customerStatement->execute()
-        if($bookingStatement->execute()){
+        
+        if($bookingStatement && $customerStatement->execute()){
             return true;
         }
     
