@@ -8,6 +8,7 @@ class Booking {
     // Object properties
     public $id;
     public $customerId;
+    public $dateOfBooking;
     public $timeOfBooking;
     public $numberOfGuests;
     
@@ -34,7 +35,7 @@ class Booking {
 
     function create() {
         $bookingQuery = "INSERT INTO " . $this->tableName . "
-            SET customerId=:customerId, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
+            SET customerId=:customerId, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
         $customerQuery = "INSERT INTO customer
             SET email=:email, name=:name, phone=:phone";
 
@@ -54,6 +55,7 @@ class Booking {
     
         // Bind values
         $bookingStatement->bindParam(":customerId", $this->customerId);
+        $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
         $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
         $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
         $customerStatement->bindParam(":email", $this->email);
@@ -102,7 +104,8 @@ function update(){
     $query = "UPDATE
                 " . $this->tableName . "
             SET
-            numberOfGuests=:numberOfGuests, 
+            numberOfGuests=:numberOfGuests,
+            dateOfBooking=:dateOfBooking,
             timeOfBooking=:timeOfBooking
             WHERE
                 id = :id";
