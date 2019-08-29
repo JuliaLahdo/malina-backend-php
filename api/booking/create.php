@@ -22,35 +22,33 @@ $data = json_decode(file_get_contents("php://input"));
 
 // Make sure data is not empty
 if(
-    // !empty($data->customerId) &&
-    // !empty($data->dateOfBooking) &&
-    // !empty($data->timeOfBooking) &&
-    // !empty($data->numberOfGuests) &&
+    !empty($data->customerId) &&
+    !empty($data->dateOfBooking) &&
+    !empty($data->timeOfBooking) &&
+    !empty($data->numberOfGuests) &&
     !empty($data->email) &&
     !empty($data->name) &&
     !empty($data->phone)
-    
 ){
 
-    $fetchedEmail = $booking->create();
+    // $fetchedEmail = $booking->create();
 
-    if($fetchedEmail["email"] === $email) {
+    // if($fetchedEmail["email"] === $email) {
         // echo("first email " + $email);
         // echo ("second email " + $fetchedEmail);
         // echo ("third email " + $email);
-        echo ("Email already found");
-    } else {
+        // echo ("Email already found");
+    // } else {
  
     // Set booking property values
-    // $booking->customerId = $data->customerId;
-    // $booking->dateOfBooking = $data->dateOfBooking;
-    // $booking->timeOfBooking = $data->timeOfBooking;
-    // $booking->numberOfGuests = $data->numberOfGuests;
+    $booking->customerId = $data->customerId;
+    $booking->dateOfBooking = $data->dateOfBooking;
+    $booking->timeOfBooking = $data->timeOfBooking;
+    $booking->numberOfGuests = $data->numberOfGuests;
     $booking->email = $data->email;
     $booking->name = $data->name;
     $booking->phone = $data->phone;
-    }
-
+    
     // Create the booking
     if($booking->create()){
 
@@ -75,7 +73,7 @@ if(
 }
 
 // Tell the user data is incomplete
-else{
+else {
  
     // Set response code - 400 bad request
     http_response_code(400);

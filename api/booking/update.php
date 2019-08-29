@@ -24,9 +24,9 @@ $data = json_decode(file_get_contents("php://input"));
 $booking->id = $data->id;
  
 // Set booking property values
-// $booking->dateOfBooking = $data->dateOfBooking;
-// $booking->timeOfBooking = $data->timeOfBooking;
-// $booking->numberOfGuests = $data->numberOfGuests;
+$booking->dateOfBooking = $data->dateOfBooking;
+$booking->timeOfBooking = $data->timeOfBooking;
+$booking->numberOfGuests = $data->numberOfGuests;
 $booking->email = $data->email;
 $booking->name = $data->name;
 $booking->phone = $data->phone;
