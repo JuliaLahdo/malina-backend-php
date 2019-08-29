@@ -2,8 +2,8 @@
 
 class Booking {
     // Database connection & table name
-    private $bookingTable = "booking";
-    // private $customerTable = "customer";
+    // private $bookingTable = "booking";
+    private $customerTable = "customer";
 
     // Object properties
     public $id;
@@ -11,6 +11,9 @@ class Booking {
     public $dateOfBooking;
     public $timeOfBooking;
     public $numberOfGuests;
+    public $email;
+    public $name;
+    public $phone;
     
     // Constructor with $database as database connection
     public function __construct($db) {
@@ -34,43 +37,64 @@ class Booking {
     }
 
     function create() {
-        $bookingQuery = "INSERT INTO " . $this->bookingTable . "
-            SET customerId=:customerId, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
+        $stmt = $this->pdo->prepare
+            ("SELECT * customers WHERE email=:email");
 
-        // $customerQuery = "INSERT INTO " . $this->customerTable . "
-        //     SET email=:email, name=:name, phone=:phone";
+        $stmt->execute([
+            ":email" => $email
+        ]);
+        return $stmt -> fetch();
+
+        // $bookingQuery = "INSERT INTO " . $this->bookingTable . "
+        //     SET customerId=:customerId, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
+
+        $customerQuery = "INSERT INTO " . $this->customerTable . "
+            SET email=:email, name=:name, phone=:phone";
 
         // Prepare booking query
-        $bookingStatement = $this->pdo->prepare($bookingQuery);
+        // $bookingStatement = $this->pdo->prepare($bookingQuery);
         // Prepare customer query
-        // $customerStatement = $this->pdo->prepare($customerQuery);
+        $customerStatement = $this->pdo->prepare($customerQuery);
 
         // Sanitize
-        $this->customerId=htmlspecialchars(strip_tags($this->customerId));
-        $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
-        $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
-        $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-        // $this->email=htmlspecialchars(strip_tags($this->email));
-        // $this->name=htmlspecialchars(strip_tags($this->name));
-        // $this->phone=htmlspecialchars(strip_tags($this->phone));
+        // $this->customerId=htmlspecialchars(strip_tags($this->customerId));
+        // $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
+        // $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
+        // $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
+        $this->email=htmlspecialchars(strip_tags($this->email));
+        $this->name=htmlspecialchars(strip_tags($this->name));
+        $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // Bind values
-        $bookingStatement->bindParam(":customerId", $this->customerId);
-        $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
-        $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
-        $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
-        // $customerStatement->bindParam(":email", $this->email);
-        // $customerStatement->bindParam(":name", $this->name);
-        // $customerStatement->bindParam(":phone", $this->phone);
+        // $bookingStatement->bindParam(":customerId", $this->customerId);
+        // $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
+        // $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
+        // $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
+        $customerStatement->bindParam(":email", $this->email);
+        $customerStatement->bindParam(":name", $this->name);
+        $customerStatement->bindParam(":phone", $this->phone);
     
         // Execute query
         //  && $customerStatement->execute()
-        if($bookingStatement->execute()){
+        // $bookingStatement->execute()
+        if($customerStatement->execute()){
             return true;
         }
     
         return false;
     }
+
+    // function fetchEmail($email) {
+    //     $stmt = $this->pdo->prepare
+    //         ("SELECT * customers WHERE email=:email");
+
+    //     $stmt->execute([
+    //         ":email" => $email
+    //     ]);
+    //     return $stmt -> fetch();
+
+    //     $this.create();
+    // }
 
     // Delete the product
     function delete(){
