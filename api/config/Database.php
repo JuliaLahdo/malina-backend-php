@@ -1,7 +1,7 @@
 <?php
 
 class Database {
-    private $databaseHost = "localhost:3306";
+    private $databaseHost = "localhost:8889";
     private $databaseName = "malina";
     private $databaseUsername = 'root';
     private $databasePassword = 'root';

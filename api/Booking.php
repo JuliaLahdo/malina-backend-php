@@ -137,28 +137,37 @@ class Booking {
     }
 
     // Delete the product
-    function delete(){
+    function deleteBooking(){
 
         // Delete booking query
         $deleteBooking = "DELETE FROM " . $this->bookingTable . " WHERE id = ?";
 
-        // Delete customer query
-        $deleteCustomer = "DELETE FROM " . $this->customerTable . " WHERE id = ?";
-
         // Prepare booking-query
         $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
 
-        // Prepare customer delete-query
-        $deletecustomerStatement = $this->pdo->prepare($customerBooking);
-
-        // Sanitize
-        $this->id=htmlspecialchars(strip_tags($this->id));
-
         // Bind id of record to delete
-        $statement->bindParam(1, $this->id);
+        $deleteBookingStatement->bindParam(1, $this->id);
 
         // Execute query
-        if($statement->execute()){
+        if($deleteBookingStatement->execute()){
+            return true;
+        }
+        return false;
+    }
+
+    function deleteCustomer() {
+
+        // Delete customer query
+        $deleteCustomer = "DELETE FROM " . $this->customerTable . " WHERE id = ?";
+
+        // Prepare customer delete-query
+        $deleteCustomerStatement = $this->pdo->prepare($deleteCustomer);
+
+        // Bind id of record to delete
+        $deleteCustomerStatement->bindParam(1, $this->id);
+
+        // Execute query
+        if($deleteCustomerStatement->execute()){
             return true;
         }
         return false;
