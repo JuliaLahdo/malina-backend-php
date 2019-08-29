@@ -30,6 +30,15 @@ if(
     !empty($data->name) &&
     !empty($data->phone)
 ){
+
+    // $fetchedEmail = $booking->create();
+
+    // if($fetchedEmail["email"] === $email) {
+        // echo("first email " + $email);
+        // echo ("second email " + $fetchedEmail);
+        // echo ("third email " + $email);
+        // echo ("Email already found");
+    // } else {
  
     // Set booking property values
     $booking->customerId = $data->customerId;
@@ -64,7 +73,7 @@ if(
 }
 
 // Tell the user data is incomplete
-else{
+else {
  
     // Set response code - 400 bad request
     http_response_code(400);

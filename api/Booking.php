@@ -11,7 +11,7 @@ class Booking {
     public $dateOfBooking;
     public $timeOfBooking;
     public $numberOfGuests;
-    public $nemail;
+    public $email;
     public $name;
     public $phone;
     
@@ -37,10 +37,17 @@ class Booking {
     }
 
     function create() {
+
         $bookingQuery = "INSERT INTO " . $this->bookingTable . "
-            SET customerId=:customerId, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
-            $customerQuery = "INSERT INTO " . $this->customerTable . "
-            SET email=:email, name=:name, phone=:phone";
+            SET customerId=:customerId,
+                dateOfBooking=:dateOfBooking,
+                timeOfBooking=:timeOfBooking,
+                numberofGuests=:numberOfGuests";
+
+        $customerQuery = "INSERT INTO " . $this->customerTable . "
+            SET email=:email,
+                name=:name,
+                phone=:phone";
 
         // Prepare booking query
         $bookingStatement = $this->pdo->prepare($bookingQuery);
@@ -66,7 +73,6 @@ class Booking {
         $customerStatement->bindParam(":phone", $this->phone);
     
         // Execute query
-        
         if(($bookingStatement)->execute() && ($customerStatement)->execute()){
             return true;
         }
@@ -74,65 +80,99 @@ class Booking {
         return false;
     }
 
-    // Delete the product
-    function delete(){
- 
-        // Delete query
-        $deleteBooking = "DELETE FROM " . $this->bookingTable . " WHERE id = ?";
-    
-        // Prepare query
-        $statement = $this->pdo->prepare($deleteBooking);
-    
-        // Sanitize
-        $this->id=htmlspecialchars(strip_tags($this->id));
-    
-        // Bind id of record to delete
-        $statement->bindParam(1, $this->id);
-    
-        // Execute query
-        if($statement->execute()){
-            return true;
-        }
-    
-        return false;
-     
-}
+    // function fetchEmail($email) {
+    //     $stmt = $this->pdo->prepare
+    //         ("SELECT * customers WHERE email=:email");
 
+    //     $stmt->execute([
+    //         ":email" => $email
+    //     ]);
+    //     return $stmt -> fetch();
+
+    //     $this.create();
+    // }
 
     // Update the product
     function update(){
- 
+
         // Update booking
-        $query = "UPDATE
-                " . $this->bookingTable . "
-            SET
-            numberOfGuests=:numberOfGuests,
-            dateOfBooking=:dateOfBooking,
-            timeOfBooking=:timeOfBooking
-            WHERE
-                id = :id";
- 
+        $updateBooking = "UPDATE " . $this->bookingTable . "
+            SET numberOfGuests=:numberOfGuests,
+                dateOfBooking=:dateOfBooking,
+                timeOfBooking=:timeOfBooking
+                WHERE id = :id";
+        
+        $updateCustomer = "UPDATE " . $this->customerTable . "
+            SET numberOfGuests=:numberOfGuests,
+                dateOfBooking=:dateOfBooking,
+                timeOfBooking=:timeOfBooking
+            WHERE id = :id";
+
         // Prepare query statement
         $statement = $this->pdo->prepare($query);
- 
+    
         // Sanitize
-        $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
+        $this->id=htmlspecialchars(strip_tags($this->id));
         $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
-        $this->id=htmlspecialchars(strip_tags($this->id));
- 
+        $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
+        $this->email=htmlspecialchars(strip_tags($this->email));
+        $this->name=htmlspecialchars(strip_tags($this->name));
+        $this->phone=htmlspecialchars(strip_tags($this->phone));
+    
         // Bind new values
-        $statement->bindParam(':numberOfGuests', $this->numberOfGuests);
+        $statement->bindParam(':id', $this->id);
         $statement->bindParam(':dateOfBooking', $this->dateOfBooking);
         $statement->bindParam(':timeOfBooking', $this->timeOfBooking);
-        $statement->bindParam(':id', $this->id);
- 
+        $statement->bindParam(':numberOfGuests', $this->numberOfGuests);
+        $statement->bindParam(':email', $this->email);
+        $statement->bindParam(':name', $this->name);
+        $statement->bindParam(':phone', $this->phone);
+    
         // Execute the query
         if($statement->execute()){
         return true;
         }
         return false;
     }
+
+    // Delete the product
+    function deleteBooking(){
+
+        // Delete booking query
+        $deleteBooking = "DELETE FROM " . $this->bookingTable . " WHERE id = ?";
+
+        // Prepare booking-query
+        $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
+
+        // Bind id of record to delete
+        $deleteBookingStatement->bindParam(1, $this->id);
+
+        // Execute query
+        if($deleteBookingStatement->execute()){
+            return true;
+        }
+        return false;
+    }
+
+    function deleteCustomer() {
+
+        // Delete customer query
+        $deleteCustomer = "DELETE FROM " . $this->customerTable . " WHERE id = ?";
+
+        // Prepare customer delete-query
+        $deleteCustomerStatement = $this->pdo->prepare($deleteCustomer);
+
+        // Bind id of record to delete
+        $deleteCustomerStatement->bindParam(1, $this->id);
+
+        // Execute query
+        if($deleteCustomerStatement->execute()){
+            return true;
+        }
+        return false;
+    }
+
 }
 
 ?>

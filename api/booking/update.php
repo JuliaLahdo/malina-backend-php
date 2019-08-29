@@ -27,6 +27,9 @@ $booking->id = $data->id;
 $booking->dateOfBooking = $data->dateOfBooking;
 $booking->timeOfBooking = $data->timeOfBooking;
 $booking->numberOfGuests = $data->numberOfGuests;
+$booking->email = $data->email;
+$booking->name = $data->name;
+$booking->phone = $data->phone;
 
 // Update the booking
 if($booking->update()){
@@ -35,7 +38,7 @@ if($booking->update()){
     http_response_code(200);
  
     // Tell the user
-    echo json_encode(array("message" => "booking was updated."));
+    echo json_encode(array("message" => "Booking was updated."));
 }
  
 // If unable to update the booking, tell the user

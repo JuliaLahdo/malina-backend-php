@@ -24,13 +24,33 @@ $data = json_decode(file_get_contents("php://input"));
 $booking->id = $data->id;
  
 // Delete the booking
-if($booking->delete()){
+if($booking->deleteBooking()){
  
     // Set response code - 200 ok
     http_response_code(200);
  
     // Tell the user
-    echo json_encode(array("message" => "booking was deleted."));
+    echo json_encode(array("message" => "Booking was deleted."));
+}
+ 
+// If unable to delete the booking
+else{
+ 
+    // Set response code - 503 service unavailable
+    http_response_code(503);
+ 
+    // Tell the user
+    echo json_encode(array("message" => "Unable to delete booking."));
+}
+
+// Delete the booking
+if($booking->deleteCustomer()){
+ 
+    // Set response code - 200 ok
+    http_response_code(200);
+ 
+    // Tell the user
+    echo json_encode(array("message" => "Customerdata was deleted."));
 }
  
 // If unable to delete the booking
