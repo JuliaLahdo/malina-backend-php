@@ -47,6 +47,7 @@ class Booking {
 
         // Sanitize
         $this->customerId=htmlspecialchars(strip_tags($this->customerId));
+        $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
         $this->email=htmlspecialchars(strip_tags($this->email));
