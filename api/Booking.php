@@ -3,7 +3,7 @@
 class Booking {
     // Database connection & table name
     private $bookingTable = "booking";
-    // private $customerTable = "customer";
+    private $customerTable = "customer";
 
     // Object properties
     public $id;
@@ -36,9 +36,8 @@ class Booking {
     function create() {
         $bookingQuery = "INSERT INTO " . $this->bookingTable . "
             SET customerId=:customerId, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking, numberofGuests=:numberOfGuests";
-
-        // $customerQuery = "INSERT INTO " . $this->customerTable . "
-        //     SET email=:email, name=:name, phone=:phone";
+            $customerQuery = "INSERT INTO " . $this->customerTable . "
+            SET email=:email, name=:name, phone=:phone";
 
         // Prepare booking query
         $bookingStatement = $this->pdo->prepare($bookingQuery);
@@ -97,37 +96,40 @@ class Booking {
 }
 
 
-// Update the product
+    // Update the product
     function update(){
-    
+ 
         // Update booking
-        $updateBooking = "UPDATE " . $this->tableName . " 
-                    SET numberOfGuests=:numberOfGuests, dateOfBooking=:dateOfBooking, timeOfBooking=:timeOfBooking
-                    WHERE id = :id";
-    
+        $query = "UPDATE
+                " . $this->bookingTable . "
+            SET
+            numberOfGuests=:numberOfGuests,
+            dateOfBooking=:dateOfBooking,
+            timeOfBooking=:timeOfBooking
+            WHERE
+                id = :id";
+ 
         // Prepare query statement
-        $statement = $this->pdo->prepare($updateBooking);
-    
+        $statement = $this->pdo->prepare($query);
+ 
         // Sanitize
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
         $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->id=htmlspecialchars(strip_tags($this->id));
-    
+ 
         // Bind new values
         $statement->bindParam(':numberOfGuests', $this->numberOfGuests);
         $statement->bindParam(':dateOfBooking', $this->dateOfBooking);
         $statement->bindParam(':timeOfBooking', $this->timeOfBooking);
         $statement->bindParam(':id', $this->id);
-    
+ 
         // Execute the query
         if($statement->execute()){
-            return true;
+        return true;
         }
-    
         return false;
     }
-
 }
 
 ?>

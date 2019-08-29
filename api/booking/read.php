@@ -41,7 +41,10 @@ if($number>0) {
             "customerId" => $customerId,
             "dateOfBooking" => $dateOfBooking,
             "timeOfBooking" => $timeOfBooking,
-            "numberOfGuests" => $numberOfGuests
+            "numberOfGuests" => $numberOfGuests,
+            "email" => $email,
+            "name" => $name,
+            "phone" => $phone
         );
  
         array_push($bookingsArray["bookings"], $singleBooking);
