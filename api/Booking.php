@@ -11,6 +11,9 @@ class Booking {
     public $dateOfBooking;
     public $timeOfBooking;
     public $numberOfGuests;
+    public $nemail;
+    public $name;
+    public $phone;
     
     // Constructor with $database as database connection
     public function __construct($db) {
@@ -64,7 +67,7 @@ class Booking {
     
         // Execute query
         
-        if($bookingStatement && $customerStatement->execute()){
+        if(($bookingStatement)->execute() && ($customerStatement)->execute()){
             return true;
         }
     
