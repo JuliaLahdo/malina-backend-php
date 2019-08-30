@@ -37,26 +37,37 @@ class Booking {
     }
 
     function create() {
-        // var_dump($this->email);
+        
+        var_dump($this->email);
 
         $fetchEmail = $this->pdo->prepare
-            ("SELECT * customers WHERE email=:email");
+            ("SELECT * FROM " . $this->customerTable . " WHERE email=:email");
 
-        $fetchEmail->execute([
-            ":email" => $this->email
-        ]);
+        $fetchEmail->bindParam("email", $this->email);
 
-        $result = $fetchEmail->fetch();
+        $fetchEmail->execute();
+
+        // var_dump($fetchEmail);
+
+        $rowCount = $fetchEmail->rowCount();
+
+        echo json_encode(array("rowCount variable is " => $rowCount));
 
         // $result = $fetchEmail->fetchAll();
-        
-        // var_dump($result);
-        // echo("Echo result: " . $result);
-        // var_dump(sizeof($result));
 
-        if(sizeof($result) > 0) {
-            echo("User did exist ");
-            var_dump($result);
+        if($rowCount > 0) {
+            // return $fetchEmail;
+            $result = $fetchEmail->fetch(PDO::FETCH_ASSOC);
+
+            echo json_encode(array("Result id variable is " => $result[id]));
+            echo json_encode(array("Result variable is " => $result));
+            
+            // Blir hela customerobjektet ^^^^^^^
+
+            echo("Going into if");
+            // echo("User did exist ");
+            // var_dump($result);
+            // var_dump($rowCount);
 
             $bookingQuery = "INSERT INTO " . $this->bookingTable . "
             SET customerId=:customerId,
@@ -64,28 +75,56 @@ class Booking {
                 timeOfBooking=:timeOfBooking,
                 numberofGuests=:numberOfGuests";
 
+            // echo("User STILL did exist ");
+
             // Prepare booking query
             $bookingStatement = $this->pdo->prepare($bookingQuery);
+            $bookingStatement->execute([
+                ":customerId" => $result[id],
+                ":dateOfBooking" => $this->dateOfBooking,
+                ":timeOfBooking" => $this->timeOfBooking,
+                ":numberOfGuests" => $this->numberOfGuests
+            ]);
 
         } else {
-            echo("User did not exists, create it");
+
+            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES,TRUE);
+
+            echo("Going into else");
 
             $customerQuery = "INSERT INTO " . $this->customerTable . "
             SET email=:email,
                 name=:name,
                 phone=:phone";
 
+            echo json_encode(array("customerQuery variable is " => $customerQuery));
+
+            // $lastId = $pdo->lastInsertId();
+            // echo json_encode(array("lastId variable is " => $lastId));
+            // ^^^^^^^^^ NULL
+
             // Prepare customer query
             $customerStatement = $this->pdo->prepare($customerQuery);
-            $customerStatement->execute();
 
-            $lastId = $pdo->lastInsertId();
+            // echo json_encode(array("customerStatement variable is " => $customerStatement));
 
-            echo("created user with id: ");
-            var_dump($lastId);
+            // echo json_encode(array("customerStatement variable is " => $result[email]));
+
+
+            echo("Running query");
+
+            $customerStatement->execute([
+                ":email" => $result[email],
+                ":name" => $result[name],
+                ":phone" => $result[phone]
+            ]);
+
+            $lastId = $this->pdo->lastInsertId();
+
+            echo json_encode(array("lastId variable is " => $lastId));
             
             $bookingQuery = "INSERT INTO " . $this->bookingTable . "
-            SET customerId=$lastId,
+            SET customerId=:customerId,
                 dateOfBooking=:dateOfBooking,
                 timeOfBooking=:timeOfBooking,
                 numberofGuests=:numberOfGuests";
@@ -93,32 +132,41 @@ class Booking {
             // Prepare booking query
             $bookingStatement = $this->pdo->prepare($bookingQuery);
 
+            $bookingStatement->execute([
+                ":customerId" => $lastId,
+                ":dateOfBooking" => $this->dateOfBooking,
+                ":timeOfBooking" => $this->timeOfBooking,
+                ":numberOfGuests" => $this->numberOfGuests
+            ]);
+
         }
 
         // Sanitize
-        $this->customerId=htmlspecialchars(strip_tags($this->customerId));
-        $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
-        $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
-        $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-        $this->email=htmlspecialchars(strip_tags($this->email));
-        $this->name=htmlspecialchars(strip_tags($this->name));
-        $this->phone=htmlspecialchars(strip_tags($this->phone));
+        // $this->customerId=htmlspecialchars(strip_tags($this->customerId));
+        // $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
+        // $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
+        // $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
+        // $this->email=htmlspecialchars(strip_tags($this->email));
+        // $this->name=htmlspecialchars(strip_tags($this->name));
+        // $this->phone=htmlspecialchars(strip_tags($this->phone));
     
-        // Bind values
-        $bookingStatement->bindParam(":customerId", $this->customerId);
-        $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
-        $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
-        $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
-        $customerStatement->bindParam(":email", $this->email);
-        $customerStatement->bindParam(":name", $this->name);
-        $customerStatement->bindParam(":phone", $this->phone);
+        // // Bind values
+        // $bookingStatement->bindParam(":customerId", $this->customerId);
+        // $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
+        // $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
+        // $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
+        // $customerStatement->bindParam(":email", $this->email);
+        // $customerStatement->bindParam(":name", $this->name);
+        // $customerStatement->bindParam(":phone", $this->phone);
     
         // Execute query
-        if(($bookingStatement)->execute() && ($customerStatement)->execute()){
+        // if($bookingStatement->execute() && $customerStatement->execute()){
             return true;
-        }
+            echo("Booked");
+        // }
     
         return false;
+        echo("Not booked");
     }
 
     // function fetchEmail($email) {
