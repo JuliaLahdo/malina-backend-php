@@ -37,22 +37,63 @@ class Booking {
     }
 
     function create() {
+        // var_dump($this->email);
 
-        $bookingQuery = "INSERT INTO " . $this->bookingTable . "
+        $fetchEmail = $this->pdo->prepare
+            ("SELECT * customers WHERE email=:email");
+
+        $fetchEmail->execute([
+            ":email" => $this->email
+        ]);
+
+        $result = $fetchEmail->fetch();
+
+        // $result = $fetchEmail->fetchAll();
+        
+        // var_dump($result);
+        // echo("Echo result: " . $result);
+        // var_dump(sizeof($result));
+
+        if(sizeof($result) > 0) {
+            echo("User did exist ");
+            var_dump($result);
+
+            $bookingQuery = "INSERT INTO " . $this->bookingTable . "
             SET customerId=:customerId,
                 dateOfBooking=:dateOfBooking,
                 timeOfBooking=:timeOfBooking,
                 numberofGuests=:numberOfGuests";
 
-        $customerQuery = "INSERT INTO " . $this->customerTable . "
+            // Prepare booking query
+            $bookingStatement = $this->pdo->prepare($bookingQuery);
+
+        } else {
+            echo("User did not exists, create it");
+
+            $customerQuery = "INSERT INTO " . $this->customerTable . "
             SET email=:email,
                 name=:name,
                 phone=:phone";
 
-        // Prepare booking query
-        $bookingStatement = $this->pdo->prepare($bookingQuery);
-        // Prepare customer query
-        $customerStatement = $this->pdo->prepare($customerQuery);
+            // Prepare customer query
+            $customerStatement = $this->pdo->prepare($customerQuery);
+            $customerStatement->execute();
+
+            $lastId = $pdo->lastInsertId();
+
+            echo("created user with id: ");
+            var_dump($lastId);
+            
+            $bookingQuery = "INSERT INTO " . $this->bookingTable . "
+            SET customerId=$lastId,
+                dateOfBooking=:dateOfBooking,
+                timeOfBooking=:timeOfBooking,
+                numberofGuests=:numberOfGuests";
+            
+            // Prepare booking query
+            $bookingStatement = $this->pdo->prepare($bookingQuery);
+
+        }
 
         // Sanitize
         $this->customerId=htmlspecialchars(strip_tags($this->customerId));

@@ -20,6 +20,8 @@ $booking = new Booking($db);
 // Get posted data
 $data = json_decode(file_get_contents("php://input"));
 
+
+
 // Make sure data is not empty
 if(
     !empty($data->customerId) &&
@@ -30,15 +32,6 @@ if(
     !empty($data->name) &&
     !empty($data->phone)
 ){
-
-    // $fetchedEmail = $booking->create();
-
-    // if($fetchedEmail["email"] === $email) {
-        // echo("first email " + $email);
-        // echo ("second email " + $fetchedEmail);
-        // echo ("third email " + $email);
-        // echo ("Email already found");
-    // } else {
  
     // Set booking property values
     $booking->customerId = $data->customerId;

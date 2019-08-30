@@ -22,7 +22,7 @@ $statement = $booking->read();
 $number = $statement->rowCount();
 
 // Check if more than 0 bookings are found
-if($number>0) {
+if($number > 0) {
 
     //Bookingsarray
     $bookingsArray = array();
