@@ -31,9 +31,6 @@ if($number > 0) {
 
     // Retrieve our table contents
     while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-        // extract row
-        // this will make $row['name'] to
-        // just $name only
         extract($row);
 
         $singleBooking = array(
