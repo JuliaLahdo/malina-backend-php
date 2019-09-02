@@ -58,7 +58,7 @@ class Booking {
 
                 // Prepare booking query
                 $bookingStatement = $this->pdo->prepare($bookingQuery);
-                
+
                 $bookingStatement->execute([
                     ":customerId" => $result[id],
                     ":dateOfBooking" => $this->dateOfBooking,
@@ -191,6 +191,21 @@ class Booking {
             return true;
         }
         return false;
+    }
+
+    function avaliableBookings() {
+        // Check avaliable bookings query
+        $avaliableBookings = "SELECT * FROM booking
+        WHERE dateOfBooking=:dateOfBooking
+        AND timeOfBooking=:timeOfBooking";
+        
+        // Prepare query statement
+        $statement = $this->pdo->prepare($avaliableBookings);
+
+        // Execute query
+        $statement->execute();
+
+        return $statement;
     }
 
 }
