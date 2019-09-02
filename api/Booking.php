@@ -1,9 +1,6 @@
 <?php
 
 class Booking {
-    // Database connection & table name
-    private $bookingTable = "booking";
-    private $customerTable = "customer";
 
     // Object properties
     public $id;
@@ -41,41 +38,29 @@ class Booking {
         var_dump($this->email);
 
         $fetchEmail = $this->pdo->prepare
-            ("SELECT * FROM " . $this->customerTable . " WHERE email=:email");
+            ("SELECT * FROM customer WHERE email=:email");
 
         $fetchEmail->bindParam("email", $this->email);
 
         $fetchEmail->execute();
 
-        // var_dump($fetchEmail);
-
         $rowCount = $fetchEmail->rowCount();
 
         echo json_encode(array("rowCount variable is " => $rowCount));
 
-        // $result = $fetchEmail->fetchAll();
-
         if($rowCount > 0) {
-            // return $fetchEmail;
             $result = $fetchEmail->fetch(PDO::FETCH_ASSOC);
 
             echo json_encode(array("Result id variable is " => $result[id]));
             echo json_encode(array("Result variable is " => $result));
-            
-            // Blir hela customerobjektet ^^^^^^^
 
             echo("Going into if");
-            // echo("User did exist ");
-            // var_dump($result);
-            // var_dump($rowCount);
 
-            $bookingQuery = "INSERT INTO " . $this->bookingTable . "
+            $bookingQuery = "INSERT INTO booking
             SET customerId=:customerId,
                 dateOfBooking=:dateOfBooking,
                 timeOfBooking=:timeOfBooking,
                 numberofGuests=:numberOfGuests";
-
-            // echo("User STILL did exist ");
 
             // Prepare booking query
             $bookingStatement = $this->pdo->prepare($bookingQuery);
@@ -88,58 +73,71 @@ class Booking {
 
         } else {
 
-            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES,TRUE);
-
             echo("Going into else");
 
-            $customerQuery = "INSERT INTO " . $this->customerTable . "
-            SET email=:email,
-                name=:name,
-                phone=:phone";
+            $customerQuery = $this->pdo->prepare(
+                "INSERT INTO customer (email, name, phone) VALUES (:email, :name, :phone)"
+            );
 
-            echo json_encode(array("customerQuery variable is " => $customerQuery));
+            echo("Going into else 2 ");
 
-            // $lastId = $pdo->lastInsertId();
-            // echo json_encode(array("lastId variable is " => $lastId));
-            // ^^^^^^^^^ NULL
-
-            // Prepare customer query
-            $customerStatement = $this->pdo->prepare($customerQuery);
-
-            // echo json_encode(array("customerStatement variable is " => $customerStatement));
-
-            // echo json_encode(array("customerStatement variable is " => $result[email]));
-
-
-            echo("Running query");
-
-            $customerStatement->execute([
-                ":email" => $result[email],
-                ":name" => $result[name],
-                ":phone" => $result[phone]
+            $customerQuery->execute([
+                ":email" => $this->email,
+                ":name" => $this->name,
+                ":phone" => $this->phone,
             ]);
 
-            $lastId = $this->pdo->lastInsertId();
+            echo("Going into else 3 ");
 
-            echo json_encode(array("lastId variable is " => $lastId));
-            
-            $bookingQuery = "INSERT INTO " . $this->bookingTable . "
-            SET customerId=:customerId,
-                dateOfBooking=:dateOfBooking,
-                timeOfBooking=:timeOfBooking,
-                numberofGuests=:numberOfGuests";
-            
-            // Prepare booking query
-            $bookingStatement = $this->pdo->prepare($bookingQuery);
+            $customerQuery = $this->pdo->prepare(
+                "SELECT LAST_INSERT_ID();"
+            );
 
-            $bookingStatement->execute([
-                ":customerId" => $lastId,
+            echo("Going into else 2 ");
+
+            $customerQuery->execute();
+
+            echo("Going into else 3");
+
+            // Without query
+            //    $lastId = $this->pdo->lastInsertId();
+
+            // With query
+            $lastInsertedId = $customerQuery->fetch(PDO::FETCH_NUM);
+
+            echo("Going into else 4 " . $lastInsertedId[0]);
+
+            // $something = $this->pdo->prepare(
+            //     "SELECT id FROM customer WHERE id = $lastInsertedId"
+            // );
+            
+            // $something->execute();
+
+            echo("Going into else 5 ");
+
+            $bookingQuery = $this->pdo->prepare(
+                "INSERT INTO booking (customerId, dateOfBooking, timeOfBooking, numberOfGuests) VALUES (:customerId, :dateOfBooking, :timeOfBooking, :numberOfGuests)"
+            );
+
+            echo("Going into else 6 ");
+
+            // $bookingQuery->bindParam(":customerId", (int)$lastInsertedId);
+            // $bookingQuery->bindParam(":dateOfBooking", $this->dateOfBooking);
+            // $bookingQuery->bindParam(":timeOfBooking", $this->timeOfBooking);
+            // $bookingQuery->bindParam(":numberOfGuests", $this->numberOfGuests);
+
+            echo("Going into else 7 ");
+
+            $bookingQuery->execute([
+                // ":customerId" => (int)$lastInsertedId,
+                ":customerId" => $lastInsertedId[0],
                 ":dateOfBooking" => $this->dateOfBooking,
                 ":timeOfBooking" => $this->timeOfBooking,
-                ":numberOfGuests" => $this->numberOfGuests
+                ":numberOfGuests" => $this->numberOfGuests,
             ]);
 
         }
+
 
         // Sanitize
         // $this->customerId=htmlspecialchars(strip_tags($this->customerId));
@@ -151,7 +149,7 @@ class Booking {
         // $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // // Bind values
-        // $bookingStatement->bindParam(":customerId", $this->customerId);
+        // $bookingQuery->bindParam(":customerId", $this->customerId);
         // $bookingStatement->bindParam(":dateOfBooking", $this->dateOfBooking);
         // $bookingStatement->bindParam(":timeOfBooking", $this->timeOfBooking);
         // $bookingStatement->bindParam(":numberOfGuests", $this->numberOfGuests);
@@ -169,29 +167,17 @@ class Booking {
         echo("Not booked");
     }
 
-    // function fetchEmail($email) {
-    //     $stmt = $this->pdo->prepare
-    //         ("SELECT * customers WHERE email=:email");
-
-    //     $stmt->execute([
-    //         ":email" => $email
-    //     ]);
-    //     return $stmt -> fetch();
-
-    //     $this.create();
-    // }
-
     // Update the product
     function update(){
 
         // Update booking
-        $updateBooking = "UPDATE " . $this->bookingTable . "
+        $updateBooking = "UPDATE booking
             SET numberOfGuests=:numberOfGuests,
                 dateOfBooking=:dateOfBooking,
                 timeOfBooking=:timeOfBooking
                 WHERE id = :id";
         
-        $updateCustomer = "UPDATE " . $this->customerTable . "
+        $updateCustomer = "UPDATE customer
             SET numberOfGuests=:numberOfGuests,
                 dateOfBooking=:dateOfBooking,
                 timeOfBooking=:timeOfBooking
@@ -229,7 +215,7 @@ class Booking {
     function deleteBooking(){
 
         // Delete booking query
-        $deleteBooking = "DELETE FROM " . $this->bookingTable . " WHERE id = ?";
+        $deleteBooking = "DELETE FROM booking WHERE id = ?";
 
         // Prepare booking-query
         $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
@@ -247,7 +233,7 @@ class Booking {
     function deleteCustomer() {
 
         // Delete customer query
-        $deleteCustomer = "DELETE FROM " . $this->customerTable . " WHERE id = ?";
+        $deleteCustomer = "DELETE FROM customer WHERE id = ?";
 
         // Prepare customer delete-query
         $deleteCustomerStatement = $this->pdo->prepare($deleteCustomer);

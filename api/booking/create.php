@@ -22,7 +22,7 @@ $data = json_decode(file_get_contents("php://input"));
 
 // Make sure data is not empty
 if(
-    !empty($data->customerId) &&
+    // !empty($data->customerId) &&
     !empty($data->dateOfBooking) &&
     !empty($data->timeOfBooking) &&
     !empty($data->numberOfGuests) &&
