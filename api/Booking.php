@@ -17,10 +17,12 @@ class Booking {
 
     // Read bookings
     function read() {
+        
         // Select all query
-        $readBookings = "SELECT * FROM booking AS b 
-            JOIN customer AS c on b.customerId = c.id
-            ORDER BY b.id DESC";
+        $readBookings = "SELECT * FROM customer
+            INNER JOIN booking
+            ON customer.id = booking.customerid
+            ORDER BY id DESC";
         
         // Prepare query statement
         $statement = $this->pdo->prepare($readBookings);
@@ -159,7 +161,7 @@ class Booking {
     function deleteBooking(){
 
         // Delete booking query
-        $deleteBooking = "DELETE FROM booking WHERE id = ?";
+        $deleteBooking = "DELETE FROM booking WHERE id = id";
 
         // Prepare booking-query
         $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
@@ -178,7 +180,7 @@ class Booking {
     function deleteCustomer() {
 
         // Delete customer query
-        $deleteCustomer = "DELETE FROM customer WHERE id = ?";
+        $deleteCustomer = "DELETE FROM customer WHERE id = :id";
 
         // Prepare customer delete-query
         $deleteCustomerStatement = $this->pdo->prepare($deleteCustomer);
