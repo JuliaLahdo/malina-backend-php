@@ -23,7 +23,7 @@ class Booking {
     function read() {
         // Select all query
         $readBookings = "SELECT * FROM booking AS b 
-            JOIN customer AS c on b.customerId = c.id
+            -- JOIN customer AS c on b.customerId = c.id
             ORDER BY b.id DESC";
         
         // Prepare query statement
