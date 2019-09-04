@@ -29,7 +29,6 @@ if(
     !empty($data->name) &&
     !empty($data->phone)
 ){
- 
     // Set booking property values
     $booking->dateOfBooking = $data->dateOfBooking;
     $booking->timeOfBooking = $data->timeOfBooking;
@@ -40,20 +39,20 @@ if(
 
     // Create the booking
     if($booking->create()){
- 
+
         // Set response code - 201 created
         http_response_code(201);
- 
+
         // Tell the user booking was created
         echo json_encode(array("message" => "Booking was created."));
     }
- 
+
     // If unable to create the booking, tell the user
     else{
- 
+
         // Set response code - 503 service unavailable
         http_response_code(503);
- 
+
         // Tell the user
         echo json_encode(array("message" => "Unable to create booking."));
     }
@@ -61,10 +60,10 @@ if(
 
 // Tell the user data is incomplete
 else {
- 
+
     // Set response code - 400 bad request
     http_response_code(400);
- 
+
     // Tell the user
     echo json_encode(array("message" => "Unable to create booking. Data is incomplete."));
 }

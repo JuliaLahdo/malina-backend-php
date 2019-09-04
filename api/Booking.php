@@ -9,29 +9,22 @@ class Booking {
     public $email;
     public $name;
     public $phone;
-    
-    // Constructor with $database as database connection
     public function __construct($db) {
         $this->pdo = $db;
-    }
+}
 
-    // Read bookings
     function read() {
-        
-        // Select all query
+
         $readBookings = "SELECT * FROM customer AS customer
             INNER JOIN booking AS booking
             ON customer.id = booking.customerid
-            ORDER BY booking.id DESC"; 
+            ORDER BY booking.id DESC";
 
-        
-        // Prepare query statement
         $statement = $this->pdo->prepare($readBookings);
 
-        // Execute query
         $statement->execute();
 
-        return $statement;
+    return $statement;
 
     }
 
@@ -61,9 +54,9 @@ class Booking {
 
                 // Prepare booking query
                 $bookingStatement = $this->pdo->prepare($bookingQuery);
-
+                
                 $bookingStatement->execute([
-                    ":customerId" => $result[id],
+                    ":customerId" => $result['id'],
                     ":dateOfBooking" => $this->dateOfBooking,
                     ":timeOfBooking" => $this->timeOfBooking,
                     ":numberOfGuests" => $this->numberOfGuests
@@ -123,7 +116,7 @@ class Booking {
                 dateOfBooking=:dateOfBooking,
                 timeOfBooking=:timeOfBooking
                 WHERE id = :id";
-        
+
         $updateCustomer = "UPDATE customer
             SET numberOfGuests=:numberOfGuests,
                 dateOfBooking=:dateOfBooking,
@@ -132,7 +125,7 @@ class Booking {
 
         // Prepare query statement
         $statement = $this->pdo->prepare($query);
-    
+
         // Sanitize
         $this->id=htmlspecialchars(strip_tags($this->id));
         $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
@@ -141,7 +134,7 @@ class Booking {
         $this->email=htmlspecialchars(strip_tags($this->email));
         $this->name=htmlspecialchars(strip_tags($this->name));
         $this->phone=htmlspecialchars(strip_tags($this->phone));
-    
+
         // Bind new values
         $statement->bindParam(':id', $this->id);
         $statement->bindParam(':dateOfBooking', $this->dateOfBooking);
@@ -162,7 +155,7 @@ class Booking {
     function deleteBooking(){
 
         // Delete booking query
-        $deleteBooking = "DELETE FROM booking WHERE id = ?";
+        $deleteBooking = "DELETE FROM booking WHERE id = id";
 
         // Prepare booking-query
         $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
@@ -181,7 +174,7 @@ class Booking {
     function deleteCustomer() {
 
         // Delete customer query
-        $deleteCustomer = "DELETE FROM customer WHERE id = :?";
+        $deleteCustomer = "DELETE FROM customer WHERE id = :id";
 
         // Prepare customer delete-query
         $deleteCustomerStatement = $this->pdo->prepare($deleteCustomer);
@@ -201,7 +194,7 @@ class Booking {
         $avaliableBookings = "SELECT * FROM booking
         WHERE dateOfBooking=:dateOfBooking
         AND timeOfBooking=:timeOfBooking";
-        
+
         // Prepare query statement
         $statement = $this->pdo->prepare($avaliableBookings);
 
