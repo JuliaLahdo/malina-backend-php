@@ -1,25 +1,25 @@
 <?php
-
+​
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
+​
 // Get database connection
 include_once '../config/Database.php';
-
+​
 // Instantiate booking object
 include_once '../Booking.php';
-
+​
 $database = new Database();
 $db = $database->databaseConnection();
-
+​
 $booking = new Booking($db);
-
+​
 // Get posted data
 $data = json_decode(file_get_contents("php://input"));
-
+​
 // Make sure data is not empty
 if(
     !empty($data->dateOfBooking) &&
@@ -37,7 +37,7 @@ if(
     $booking->email = $data->email;
     $booking->name = $data->name;
     $booking->phone = $data->phone;
-
+​
     // Create the booking
     if($booking->create()){
  
@@ -58,7 +58,7 @@ if(
         echo json_encode(array("message" => "Unable to create booking."));
     }
 }
-
+​
 // Tell the user data is incomplete
 else {
  
@@ -68,5 +68,5 @@ else {
     // Tell the user
     echo json_encode(array("message" => "Unable to create booking. Data is incomplete."));
 }
-
+​
 ?>
