@@ -19,10 +19,11 @@ class Booking {
     function read() {
         
         // Select all query
-        $readBookings = "SELECT * FROM customer
-            INNER JOIN booking
+        $readBookings = "SELECT * FROM customer AS customer
+            INNER JOIN booking AS booking
             ON customer.id = booking.customerid
-            ORDER BY id DESC";
+            ORDER BY booking.id DESC"; 
+
         
         // Prepare query statement
         $statement = $this->pdo->prepare($readBookings);
