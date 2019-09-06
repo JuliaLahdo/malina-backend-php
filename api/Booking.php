@@ -27,6 +27,24 @@ class Booking {
         $statement->execute();
         return $statement;
     }
+
+        // Read single booking
+        function readSingleBooking($id) {
+        
+            // Select all query
+            $readSingleBooking = "SELECT * FROM booking
+                JOIN customer ON booking.customerId = customer.id
+                WHERE booking.id=:id"; 
+            
+            // Prepare query statement
+            $statement = $this->pdo->prepare($readSingleBooking);
+            // Execute query
+            $statement->execute([
+                ":id" => $id,
+            ]);
+            return $statement;
+        }
+
     // Create booking
     function create() {
         try{
