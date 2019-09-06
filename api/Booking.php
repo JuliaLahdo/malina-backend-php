@@ -86,6 +86,7 @@ class Booking {
             echo("Booking was not created successfully");
         }
     }
+
     // Update booking
     function update(){
         // Update booking
@@ -95,52 +96,43 @@ class Booking {
                 timeOfBooking=:timeOfBooking
                 WHERE id = :id";
         
-        $updateCustomer = "UPDATE customer
-            SET numberOfGuests=:numberOfGuests,
-                dateOfBooking=:dateOfBooking,
-                timeOfBooking=:timeOfBooking
-            WHERE id = :id";
         // Prepare query statement
-        $statement = $this->pdo->prepare($query);
+        $bookingStatement = $this->pdo->prepare($updateBooking);
+        
+        // $updateCustomer = "UPDATE customer
+        //     SET numberOfGuests=:numberOfGuests,
+        //         dateOfBooking=:dateOfBooking,
+        //         timeOfBooking=:timeOfBooking
+        //     WHERE id = :?";
+
+        // Prepare query statement
+        // $customerStatement = $this->pdo->prepare($updateCustomer);
     
         // Sanitize
         $this->id=htmlspecialchars(strip_tags($this->id));
         $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
-        $this->email=htmlspecialchars(strip_tags($this->email));
-        $this->name=htmlspecialchars(strip_tags($this->name));
-        $this->phone=htmlspecialchars(strip_tags($this->phone));
+        // $this->email=htmlspecialchars(strip_tags($this->email));
+        // $this->name=htmlspecialchars(strip_tags($this->name));
+        // $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // Bind new values
-        $statement->bindParam(':id', $this->id);
-        $statement->bindParam(':dateOfBooking', $this->dateOfBooking);
-        $statement->bindParam(':timeOfBooking', $this->timeOfBooking);
-        $statement->bindParam(':numberOfGuests', $this->numberOfGuests);
-        $statement->bindParam(':email', $this->email);
-        $statement->bindParam(':name', $this->name);
-        $statement->bindParam(':phone', $this->phone);
+        $bookingStatement->bindParam(':id', $this->id);
+        $bookingStatement->bindParam(':dateOfBooking', $this->dateOfBooking);
+        $bookingStatement->bindParam(':timeOfBooking', $this->timeOfBooking);
+        $bookingStatement->bindParam(':numberOfGuests', $this->numberOfGuests);
+        // $customerStatement->bindParam(':email', $this->email);
+        // $customerStatement->bindParam(':name', $this->name);
+        // $customerStatement->bindParam(':phone', $this->phone);
     
         // Execute the query
-        if($statement->execute()){
-        return true;
-        }
-        return false;
-    }
-    // Delete booking
-    function deleteBooking(){
-        // Delete booking query
-        $deleteBooking = "DELETE FROM booking WHERE id = ?";
-        // Prepare booking-query
-        $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
-        // Bind id of record to delete
-        $deleteBookingStatement->bindParam(1, $this->id);
-        // Execute query
-        if($deleteBookingStatement->execute()){
+        if($bookingStatement->execute()){
             return true;
         }
-        return false;
+            return false;
     }
+    
     // Delete customer data
     function deleteCustomer() {
         // Delete customer query
@@ -155,6 +147,7 @@ class Booking {
         }
         return false;
     }
+
     function avaliableBookings() {
         // Check avaliable bookings query
         $avaliableBookings = "SELECT * FROM booking
