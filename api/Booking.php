@@ -28,22 +28,22 @@ class Booking {
         return $statement;
     }
 
-        // Read single booking
-        function readSingleBooking($id) {
+    // Read single booking
+    function readSingleBooking($id) {
+    
+        // Select all query
+        $readSingleBooking = "SELECT * FROM booking
+            JOIN customer ON booking.customerId = customer.id
+            WHERE booking.id=:id"; 
         
-            // Select all query
-            $readSingleBooking = "SELECT * FROM booking
-                JOIN customer ON booking.customerId = customer.id
-                WHERE booking.id=:id"; 
-            
-            // Prepare query statement
-            $statement = $this->pdo->prepare($readSingleBooking);
-            // Execute query
-            $statement->execute([
-                ":id" => $id,
-            ]);
-            return $statement;
-        }
+        // Prepare query statement
+        $statement = $this->pdo->prepare($readSingleBooking);
+        // Execute query
+        $statement->execute([
+            ":id" => $id,
+        ]);
+        return $statement;
+    }
 
     // Create booking
     function create() {
@@ -149,6 +149,21 @@ class Booking {
             return true;
         }
             return false;
+    }
+
+    // Delete booking
+    function deleteBooking(){
+        // Delete booking query
+        $deleteBooking = "DELETE FROM booking WHERE id = ?";
+        // Prepare booking-query
+        $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
+        // Bind id of record to delete
+        $deleteBookingStatement->bindParam(1, $this->id);
+        // Execute query
+        if($deleteBookingStatement->execute()){
+            return true;
+        }
+        return false;
     }
     
     // Delete customer data
