@@ -44,7 +44,7 @@ if(
         http_response_code(201);
 
         // Tell the user booking was created
-        echo json_encode(array("message" => "Booking was created."));
+        echo json_encode(array("message" =>$db->lastInsertId()));
     }
 
     // If unable to create the booking, tell the user
