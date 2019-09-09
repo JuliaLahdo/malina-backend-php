@@ -10,6 +10,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/Database.php';
 include_once '../Booking.php';
 
+echo("Hej");
+
 // Get database connection
 $database = new Database();
 $db = $database->databaseConnection();
@@ -23,6 +25,7 @@ $data = json_decode(file_get_contents("php://input"));
 // Set booking id to be deleted
 $booking->id = $data->id;
 
+var_dump($booking);
 // Delete the booking
 if($booking->deleteBooking()){
 
