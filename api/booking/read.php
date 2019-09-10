@@ -10,7 +10,7 @@ $booking = new Booking($db);
 $statement = $booking->read();
 $number = $statement->rowCount();
 
-if($number > 0) {
+try{
     $bookingsArray = array();
     $bookingsArray["bookings"] = array();
 
@@ -32,7 +32,9 @@ if($number > 0) {
 
     http_response_code(200);
     echo json_encode($bookingsArray);
-} else {
+}
+catch (string $error) {
+    $error2 = $error->getMessage();
     http_response_code(404);
 
     echo json_encode(
