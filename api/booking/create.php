@@ -37,6 +37,14 @@ if(
     $booking->name = $data->name;
     $booking->phone = $data->phone;
 
+    $msg = "Thank you for your booking $booking->name!\nYou are welcome the $booking->dateOfBooking at $booking->timeOfBooking with $booking->numberOfGuests people. If you have any questions, please email us at info@malina.se or call us at +46725113113.\nWe look forward to seeing you.\n/ Malina-crew";
+
+    // If $msg is longer than 70 characters we need to wordwrap
+    $msg = wordwrap($msg,70);
+
+    // Send email
+    mail($booking->email,"Malina Table Booking",$msg);
+
     // Create the booking
     if($booking->create()){
 
