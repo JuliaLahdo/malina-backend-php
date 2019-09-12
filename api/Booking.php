@@ -1,11 +1,7 @@
 <?php
 
-error_reporting(-1);
-ini_set('display_errors', 'On');
-set_error_handler("var_dump");
 
 class Booking {
-    
     // Object properties
     public $dateOfBooking;
     public $timeOfBooking;
@@ -18,19 +14,17 @@ class Booking {
     public function __construct($db) {
         $this->pdo = $db;
     }
-    
     // Read bookings
     function read() {
         
         // Select all query
-        $readBookings = "SELECT * FROM customer
-            INNER JOIN booking
+        $readBookings = "SELECT * FROM customer AS customer
+            INNER JOIN booking AS booking
             ON customer.id = booking.customerid
             ORDER BY booking.id DESC"; 
         
         // Prepare query statement
         $statement = $this->pdo->prepare($readBookings);
-
         // Execute query
         $statement->execute();
         return $statement;
@@ -59,15 +53,9 @@ class Booking {
             $fetchEmail = $this->pdo->prepare(
                 "SELECT * FROM customer WHERE email=:email"
             );
-
-            // Bind parameter email to fetched email
             $fetchEmail->bindParam("email", $this->email);
-
             $fetchEmail->execute();
-
             $rowCount = $fetchEmail->rowCount();
-
-            // If rowcount is larger than 0, create both new customer and booking
             if($rowCount > 0) {
                 $result = $fetchEmail->fetch(PDO::FETCH_ASSOC);
                 $bookingQuery = "INSERT INTO booking
@@ -75,7 +63,6 @@ class Booking {
                     dateOfBooking=:dateOfBooking,
                     timeOfBooking=:timeOfBooking,
                     numberofGuests=:numberOfGuests";
-                
                 // Prepare booking query
                 $bookingStatement = $this->pdo->prepare($bookingQuery);
                 $bookingStatement->execute([
@@ -94,14 +81,12 @@ class Booking {
                     ":name" => $this->name,
                     ":phone" => $this->phone,
                 ]);
-
                 // Select last inserted id (will be for customer added from query above)
                 $customerQuery = $this->pdo->prepare(
                     "SELECT LAST_INSERT_ID();"
                 );
                 $customerQuery->execute();
                 $lastInsertedId = $customerQuery->fetch(PDO::FETCH_NUM);
-
                 // Prepare booking query
                 $bookingQuery = $this->pdo->prepare(
                     "INSERT INTO booking (customerId, dateOfBooking, timeOfBooking, numberOfGuests) VALUES (:customerId, :dateOfBooking, :timeOfBooking, :numberOfGuests)"
@@ -114,29 +99,30 @@ class Booking {
                 ]);
         
             }
-            $header .= 'From: Malina@restaurant.se';
-            $msg = "
-                Thank you for your reservation $name \n 
-                Details
-                Date: $dateOfBooking,
-                Time: $timeOfBooking,
-                Number of guests: $numberOfGuests
-            ";
-            // use wordwrap() if lines are longer than 70 characters
-            $msg = wordwrap($msg,70);
-            // send email
-            mail('moggelicious@hotmail.com',$name,$msg, $header);
-            // Booking created successfully
+            
             return true;
+            $header .= 'From: Malina@restaurant.se';
+        $msg = "
+            Thank you for your reservation $name \n 
+            Details
+            Date: $dateOfBooking,
+            Time: $timeOfBooking,
+            Number of guests: $numberOfGuests
+        ";
+        // use wordwrap() if lines are longer than 70 characters
+        $msg = wordwrap($msg,70);
+        // send email
+        mail($email,$name,$msg, $header);
+            echo("Booking was created successfully");
         } catch (PDOException $error){
-            // Create booking was unsuccessful
             return false;
+            echo("Booking was not created successfully");
         }
     }
 
     // Update booking
     function update(){
-
+        // Update booking
         $updateBooking = "UPDATE booking
             SET numberOfGuests=:numberOfGuests,
                 dateOfBooking=:dateOfBooking,
@@ -145,78 +131,72 @@ class Booking {
         
         // Prepare query statement
         $bookingStatement = $this->pdo->prepare($updateBooking);
+        
+        // $updateCustomer = "UPDATE customer
+        //     SET numberOfGuests=:numberOfGuests,
+        //         dateOfBooking=:dateOfBooking,
+        //         timeOfBooking=:timeOfBooking
+        //     WHERE id = :?";
+
+        // Prepare query statement
+        // $customerStatement = $this->pdo->prepare($updateCustomer);
     
         // Sanitize
         $this->id=htmlspecialchars(strip_tags($this->id));
         $this->dateOfBooking=htmlspecialchars(strip_tags($this->dateOfBooking));
         $this->timeOfBooking=htmlspecialchars(strip_tags($this->timeOfBooking));
         $this->numberOfGuests=htmlspecialchars(strip_tags($this->numberOfGuests));
+        // $this->email=htmlspecialchars(strip_tags($this->email));
+        // $this->name=htmlspecialchars(strip_tags($this->name));
+        // $this->phone=htmlspecialchars(strip_tags($this->phone));
     
         // Bind new values
         $bookingStatement->bindParam(':id', $this->id);
         $bookingStatement->bindParam(':dateOfBooking', $this->dateOfBooking);
         $bookingStatement->bindParam(':timeOfBooking', $this->timeOfBooking);
         $bookingStatement->bindParam(':numberOfGuests', $this->numberOfGuests);
+        // $customerStatement->bindParam(':email', $this->email);
+        // $customerStatement->bindParam(':name', $this->name);
+        // $customerStatement->bindParam(':phone', $this->phone);
     
         // Execute the query
         if($bookingStatement->execute()){
-
-            // Booking is updated
             return true;
         }
-            // Update booking was unsuccessful
             return false;
     }
 
     // Delete booking
     function deleteBooking(){
-
         // Delete booking query
         $deleteBooking = "DELETE FROM booking WHERE id = ?";
-
         // Prepare booking-query
         $deleteBookingStatement = $this->pdo->prepare($deleteBooking);
-
         // Bind id of record to delete
         $deleteBookingStatement->bindParam(1, $this->id);
-
         // Execute query
         if($deleteBookingStatement->execute()){
-
-            // If deleting booking was successful
             return true;
         }
-
-        // If deleting wasn't successful
         return false;
     }
     
-    // Delete customer data (front-end implementation not done)
+    // Delete customer data
     function deleteCustomer() {
-
         // Delete customer query
         $deleteCustomer = "DELETE FROM customer WHERE id = ?";
-
         // Prepare customer delete-query
         $deleteCustomerStatement = $this->pdo->prepare($deleteCustomer);
-
         // Bind id of record to delete
         $deleteCustomerStatement->bindParam(1, $this->id);
-
         // Execute query
         if($deleteCustomerStatement->execute()){
-
-            // If deleting customerdata was successful
             return true;
         }
-
-        // If deleting customerdata wasn't successful
         return false;
     }
 
-    // Check avaliable bookings
     function avaliableBookings() {
-
         // Check avaliable bookings query
         $avaliableBookings = "SELECT * FROM booking
         WHERE dateOfBooking=:dateOfBooking
@@ -224,7 +204,6 @@ class Booking {
         
         // Prepare query statement
         $statement = $this->pdo->prepare($avaliableBookings);
-
         // Execute query
         $statement->execute();
         return $statement;
