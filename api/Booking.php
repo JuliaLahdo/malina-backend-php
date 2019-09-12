@@ -1,4 +1,9 @@
 <?php
+
+error_reporting(-1);
+ini_set('display_errors', 'On');
+set_error_handler("var_dump");
+
 class Booking {
     // Object properties
     public $dateOfBooking;
@@ -97,6 +102,18 @@ class Booking {
                 ]);
         
             }
+            $header .= 'From: Malina@restaurant.se';
+            $msg = "
+                Thank you for your reservation $name \n 
+                Details
+                Date: $dateOfBooking,
+                Time: $timeOfBooking,
+                Number of guests: $numberOfGuests
+            ";
+            // use wordwrap() if lines are longer than 70 characters
+            $msg = wordwrap($msg,70);
+            // send email
+            mail('moggelicious@hotmail.com',$name,$msg, $header);
             return true;
             echo("Booking was created successfully");
         } catch (PDOException $error){
