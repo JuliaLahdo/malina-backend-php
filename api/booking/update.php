@@ -27,9 +27,6 @@ $booking->id = $data->id;
 $booking->dateOfBooking = $data->dateOfBooking;
 $booking->timeOfBooking = $data->timeOfBooking;
 $booking->numberOfGuests = $data->numberOfGuests;
-// $booking->email = $data->email;
-// $booking->name = $data->name;
-// $booking->phone = $data->phone;
 
 // Update the booking
 if($booking->update()){

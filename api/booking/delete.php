@@ -10,8 +10,6 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 include_once '../config/Database.php';
 include_once '../Booking.php';
 
-echo("Hej");
-
 // Get database connection
 $database = new Database();
 $db = $database->databaseConnection();
@@ -46,7 +44,7 @@ else{
     echo json_encode(array("message" => "Unable to delete booking."));
 }
 
-// Delete the booking
+// Delete customerdata
 if($booking->deleteCustomer()){
 
     // Set response code - 200 ok
@@ -56,13 +54,13 @@ if($booking->deleteCustomer()){
     echo json_encode(array("message" => "Customerdata was deleted."));
 }
 
-// If unable to delete the booking
+// If unable to delete customerdata
 else{
 
     // Set response code - 503 service unavailable
     http_response_code(503);
 
     // Tell the user
-    echo json_encode(array("message" => "Unable to delete booking."));
+    echo json_encode(array("message" => "Unable to delete customerdata."));
 }
 ?>
