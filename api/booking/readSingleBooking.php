@@ -12,6 +12,7 @@ $bookingid = $_GET["id"];
 $statement = $booking->readSingleBooking($bookingid);
 $number = $statement->rowCount();
 
+// If rowcount from fetched booking is bigger than 0
 if($number > 0) {
     $bookingsArray = array();
     $bookingsArray["bookings"] = array();
@@ -34,6 +35,8 @@ if($number > 0) {
 
     http_response_code(200);
     echo json_encode($bookingsArray);
+
+// If rowcount was 0, no bookings are found
 } else {
     http_response_code(404);
 

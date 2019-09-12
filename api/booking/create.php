@@ -43,7 +43,7 @@ if(
         // Set response code - 201 created
         http_response_code(201);
 
-        // Tell the user booking was created
+        // Booking is created, send id which is catched on Confirm-page
         echo json_encode(array("message" =>$db->lastInsertId()));
     }
 
